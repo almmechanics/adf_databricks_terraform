@@ -1,0 +1,61 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "dataFactoryName": {
+      "type": "string",
+      "defaultValue": "[concat('datafactory', uniqueString(resourceGroup().id))]",
+      "metadata": {
+        "description": "Data Factory Name"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location of the data factory."
+      }
+    },
+    "context": {
+      "type": "string",
+      "metadata": {
+        "description": "ADF name for the dataset"
+      }
+    },
+    "linkedServiceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of linked service"
+      }
+    },
+    "container": {
+      "type": "string",
+      "metadata": {
+        "description": "Storage container location"
+      }
+    }
+  },
+  "resources": [
+    {
+        "name": "[concat(parameters('dataFactoryName'), '/', parameters('context'))]",
+        "type": "Microsoft.DataFactory/factories/datasets",
+        "apiVersion": "2018-06-01",
+        "location": "[parameters('location')]",
+        "properties": {
+            "linkedServiceName": {
+                "referenceName": "[parameters('linkedServiceName')]",
+                "type": "LinkedServiceReference"
+            },
+            "annotations": [],
+            "type": "Json",
+            "typeProperties": {
+                "location": {
+                    "type": "AzureBlobFSLocation",
+                    "fileSystem": "[parameters('container')]"
+                }
+            },
+            "schema": {}
+        }
+    }
+  ]
+}

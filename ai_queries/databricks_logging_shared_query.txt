@@ -1,0 +1,12 @@
+traces 
+| project 
+  message,
+  severityLevel,
+  LoggerName=customDimensions["LoggerName"], 
+  LoggingLevel=customDimensions["LoggingLevel"],
+  SourceType=customDimensions["SourceType"],
+  ThreadName=customDimensions["LoggingLevel"],
+  SparkTimestamp=customDimensions["TimeStamp"],
+  timestamp 
+| where LoggerName =="aiAppender" or LoggerName  == "root"
+| order by timestamp desc
