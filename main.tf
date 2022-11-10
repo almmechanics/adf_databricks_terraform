@@ -1,19 +1,3 @@
-terraform {
-  required_providers {
-    databricks = {
-      source  = "databrickslabs/databricks"
-      version = "= 0.2.8"
-    }
-    local = {
-      version = "~> 2.0.0"
-    }
-
-    azurerm = {
-      version = "=2.45.1"
-    }
-  }
-}
-
 provider "azurerm" {
   skip_provider_registration = true
   features {

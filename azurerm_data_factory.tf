@@ -30,24 +30,20 @@ resource "azurerm_data_factory" "adf" {
 
 resource "azurerm_data_factory_linked_service_data_lake_storage_gen2" "external" {
   name                 = "external"
-  resource_group_name  = data.azurerm_resource_group.logging.name
-  data_factory_name    = azurerm_data_factory.adf.name
+  data_factory_id    = azurerm_data_factory.adf.id
   use_managed_identity = true
   //service_principal_id  = data.azurerm_client_config.current.client_id
   //service_principal_key = "exampleKey"
-  tenant = data.azurerm_client_config.current.tenant_id
   url    = module.data_storage_external.primary_dfs_endpoint
 
 }
 
 resource "azurerm_data_factory_linked_service_data_lake_storage_gen2" "internal" {
   name                 = "internal"
-  resource_group_name  = data.azurerm_resource_group.logging.name
-  data_factory_name    = azurerm_data_factory.adf.name
+  data_factory_id    = azurerm_data_factory.adf.id
   use_managed_identity = true
   //  service_principal_id  = data.azurerm_client_config.current.client_id
   //  service_principal_key = "exampleKey"
-  tenant = data.azurerm_client_config.current.tenant_id
   url    = module.data_storage_internal.primary_dfs_endpoint
 }
 
@@ -96,7 +92,7 @@ data "local_file" "linked_databricks" {
   filename = "${path.module}/arm/linked_databricks.json"
 }
 
-resource "azurerm_template_deployment" "linked_databricks" {
+resource "azurerm_resource_group_template_deployment" "linked_databricks" {
   name                = local.databricks_link_name
   resource_group_name = data.azurerm_resource_group.logging.name
   template_body       = data.local_file.linked_databricks.content

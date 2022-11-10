@@ -37,14 +37,14 @@ data "local_file" "dataset_data_lake_storage_gen2" {
   filename = "${path.module}/adf/dataset_data_lake_storage_gen2.json"
 }
 
-resource "azurerm_template_deployment" "dataset_data_lake_storage_gen2_source" {
+resource "azurerm_resource_group_template_deployment" "dataset_data_lake_storage_gen2_source" {
   name                = "dataset_source"
   resource_group_name = data.azurerm_resource_group.logging.name
   template_body       = data.local_file.dataset_data_lake_storage_gen2.content
   deployment_mode     = "Incremental"
 
   parameters = {
-    dataFactoryName   = azurerm_data_factory.adf.name
+    data_factory_id   = azurerm_data_factory.adf.id
     location          = data.azurerm_resource_group.logging.location
     context           = "external"
     linkedServiceName = azurerm_data_factory_linked_service_data_lake_storage_gen2.external.name
@@ -57,7 +57,7 @@ resource "azurerm_template_deployment" "dataset_data_lake_storage_gen2_source" {
   ]
 }
 
-resource "azurerm_template_deployment" "dataset_data_lake_storage_gen2_destination" {
+resource "azurerm_resource_group_template_deployment" "dataset_data_lake_storage_gen2_destination" {
   name                = "dataset_destination"
   resource_group_name = data.azurerm_resource_group.logging.name
   template_body       = data.local_file.dataset_data_lake_storage_gen2.content
@@ -89,15 +89,13 @@ data "template_file" "pipeline_external_internal" {
 
 resource "azurerm_data_factory_pipeline" "external_internal" {
   name                = "external_internal"
-  resource_group_name = data.azurerm_resource_group.logging.name
-  data_factory_name   = azurerm_data_factory.adf.name
+  data_factory_id   = azurerm_data_factory.adf.id
   activities_json     = data.template_file.pipeline_external_internal.rendered
 }
 
 resource "azurerm_data_factory_trigger_schedule" "external_internal" {
   name                = "external_internal"
-  data_factory_name   = azurerm_data_factory.adf.name
-  resource_group_name = data.azurerm_resource_group.logging.name
+  data_factory_id   = azurerm_data_factory.adf.id
   pipeline_name       = azurerm_data_factory_pipeline.external_internal.name
 
   interval  = 5

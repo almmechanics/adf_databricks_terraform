@@ -6,19 +6,14 @@ locals {
   db_logging_name             = format("%s_logging", local.workspace_name)
 }
 
-# data "databricks_spark_version" "latest" {}
+data "databricks_spark_version" "latest" {}
 
-# data "databricks_node_type" "smallest" {
-#   local_disk = false
-# }
+data "databricks_node_type" "smallest" {
+  local_disk = false
+}
 
 provider "databricks" {
-  azure_workspace_name  = azurerm_databricks_workspace.databricks.name
-  azure_resource_group  = data.azurerm_resource_group.logging.name
-  azure_client_id       = data.azurerm_client_config.current.client_id
-  azure_client_secret   = var.client_secret
-  azure_tenant_id       = data.azurerm_client_config.current.tenant_id
-  azure_subscription_id = data.azurerm_client_config.current.subscription_id
+  host  = azurerm_databricks_workspace.databricks.workspace_url
 }
 
 resource "azurerm_databricks_workspace" "databricks" {
