@@ -95,16 +95,16 @@ data "local_file" "linked_databricks" {
 resource "azurerm_resource_group_template_deployment" "linked_databricks" {
   name                = local.databricks_link_name
   resource_group_name = data.azurerm_resource_group.logging.name
-  template_body       = data.local_file.linked_databricks.content
+  template_content       = data.local_file.linked_databricks.content
   deployment_mode     = "Incremental"
 
-  parameters = {
-    dataFactoryName     = azurerm_data_factory.adf.name
+parameters_content  = jsonencode({    dataFactoryName     = azurerm_data_factory.adf.name
     location            = data.azurerm_resource_group.logging.location
     domain              = format("https://%s", azurerm_databricks_workspace.databricks.workspace_url)
     workspaceResourceId = azurerm_databricks_workspace.databricks.id
     clusterId           = databricks_cluster.my-cluster.id
   }
+)
   depends_on = [
     azurerm_databricks_workspace.databricks,
     databricks_cluster.my-cluster,

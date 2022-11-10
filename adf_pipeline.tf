@@ -40,16 +40,17 @@ data "local_file" "dataset_data_lake_storage_gen2" {
 resource "azurerm_resource_group_template_deployment" "dataset_data_lake_storage_gen2_source" {
   name                = "dataset_source"
   resource_group_name = data.azurerm_resource_group.logging.name
-  template_body       = data.local_file.dataset_data_lake_storage_gen2.content
+  template_content       = data.local_file.dataset_data_lake_storage_gen2.content
   deployment_mode     = "Incremental"
 
-  parameters = {
+  parameters_content  = jsonencode({
     data_factory_id   = azurerm_data_factory.adf.id
     location          = data.azurerm_resource_group.logging.location
     context           = "external"
     linkedServiceName = azurerm_data_factory_linked_service_data_lake_storage_gen2.external.name
     container         = "source"
   }
+  )
   depends_on = [
     azurerm_databricks_workspace.databricks,
     databricks_cluster.my-cluster,
@@ -60,16 +61,17 @@ resource "azurerm_resource_group_template_deployment" "dataset_data_lake_storage
 resource "azurerm_resource_group_template_deployment" "dataset_data_lake_storage_gen2_destination" {
   name                = "dataset_destination"
   resource_group_name = data.azurerm_resource_group.logging.name
-  template_body       = data.local_file.dataset_data_lake_storage_gen2.content
+  template_content       = data.local_file.dataset_data_lake_storage_gen2.content
   deployment_mode     = "Incremental"
 
-  parameters = {
+  parameters_content  = jsonencode({
     dataFactoryName   = azurerm_data_factory.adf.name
     location          = data.azurerm_resource_group.logging.location
     context           = "internal"
     linkedServiceName = azurerm_data_factory_linked_service_data_lake_storage_gen2.internal.name
     container         = "destination"
   }
+  )
   depends_on = [
     azurerm_databricks_workspace.databricks,
     databricks_cluster.my-cluster,
