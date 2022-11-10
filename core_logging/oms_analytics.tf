@@ -7,15 +7,15 @@ data "local_file" "oms_analytics" {
   filename = "${path.module}/arm/oms_analytics.json"
 }
 
-resource "azurerm_template_deployment" "adf_analytics" {
+resource "azurerm_resource_group_template_deployment" "adf_analytics" {
   name                = local.adf_analytics_name
   resource_group_name = var.resource_group_name
-  template_body       = data.local_file.oms_analytics.content
+  template_content    = data.local_file.oms_analytics.content
   deployment_mode     = "Incremental"
 
-  parameters = {
+  parameters_content = jsonencode({
     Name        = local.adf_analytics_name
     WorkspaceId = azurerm_log_analytics_workspace.oms.id
     OMSProduct  = local.adf_oms_product
-  }
+  })
 }

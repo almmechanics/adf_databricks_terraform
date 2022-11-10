@@ -9,12 +9,9 @@ data "local_file" "logging_python" {
 }
 
 resource "databricks_notebook" "logging_python" {
-  content   = data.local_file.logging_python.content_base64
-  path      = "/Shared/logging_python"
-  language  = "PYTHON"
-  overwrite = false
-  mkdirs    = true
-  format    = "SOURCE"
+  source   = data.local_file.logging_python.content_base64
+  path     = "/Shared/logging_python"
+  language = "PYTHON"
 
   depends_on = [
     azurerm_databricks_workspace.databricks
@@ -26,12 +23,9 @@ data "local_file" "logging_scala" {
 }
 
 resource "databricks_notebook" "logging_scala" {
-  content   = data.local_file.logging_scala.content_base64
-  path      = "/Shared/logging_scala"
-  language  = "SCALA"
-  overwrite = false
-  mkdirs    = true
-  format    = "SOURCE"
+  source   = data.local_file.logging_scala.content_base64
+  path     = "/Shared/logging_scala"
+  language = "SCALA"
 
   depends_on = [
     azurerm_databricks_workspace.databricks
@@ -43,12 +37,9 @@ data "local_file" "adf_calling_databricks" {
 }
 
 resource "databricks_notebook" "adf_calling_databricks" {
-  content   = data.local_file.adf_calling_databricks.content_base64
-  path      = "/Shared/adf_calling_databricks"
-  language  = "PYTHON"
-  overwrite = false
-  mkdirs    = true
-  format    = "SOURCE"
+  source   = data.local_file.adf_calling_databricks.content_base64
+  path     = "/Shared/adf_calling_databricks"
+  language = "PYTHON"
 
   depends_on = [
     azurerm_databricks_workspace.databricks
