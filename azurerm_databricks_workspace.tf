@@ -13,7 +13,7 @@ data "databricks_node_type" "smallest" {
 }
 
 provider "databricks" {
-  host  = azurerm_databricks_workspace.databricks.workspace_url
+  host = azurerm_databricks_workspace.databricks.workspace_url
 }
 
 resource "azurerm_databricks_workspace" "databricks" {

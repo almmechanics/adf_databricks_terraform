@@ -10,8 +10,8 @@ data "local_file" "logging_python" {
 
 resource "databricks_notebook" "logging_python" {
   source   = data.local_file.logging_python.content_base64
-  path      = "/Shared/logging_python"
-  language  = "PYTHON"
+  path     = "/Shared/logging_python"
+  language = "PYTHON"
 
   depends_on = [
     azurerm_databricks_workspace.databricks
@@ -24,8 +24,8 @@ data "local_file" "logging_scala" {
 
 resource "databricks_notebook" "logging_scala" {
   source   = data.local_file.logging_scala.content_base64
-  path      = "/Shared/logging_scala"
-  language  = "SCALA"
+  path     = "/Shared/logging_scala"
+  language = "SCALA"
 
   depends_on = [
     azurerm_databricks_workspace.databricks
@@ -38,9 +38,9 @@ data "local_file" "adf_calling_databricks" {
 
 resource "databricks_notebook" "adf_calling_databricks" {
   source   = data.local_file.adf_calling_databricks.content_base64
-  path      = "/Shared/adf_calling_databricks"
-  language  = "PYTHON"
- 
+  path     = "/Shared/adf_calling_databricks"
+  language = "PYTHON"
+
   depends_on = [
     azurerm_databricks_workspace.databricks
   ]

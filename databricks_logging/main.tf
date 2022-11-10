@@ -16,8 +16,8 @@ data "external" "download_ai_logging" {
 }
 
 resource "databricks_dbfs_file" "ai_core" {
-  source               = lookup(data.external.download_ai_core.result, "library")
-  path                 = local.dbfs_ai_core
+  source = lookup(data.external.download_ai_core.result, "library")
+  path   = local.dbfs_ai_core
 
   depends_on = [
     data.external.download_ai_core
@@ -25,8 +25,8 @@ resource "databricks_dbfs_file" "ai_core" {
 }
 
 resource "databricks_dbfs_file" "ai_logging" {
-  source               = lookup(data.external.download_ai_logging.result, "library")
-  path                 = local.dbfs_ai_logging
+  source = lookup(data.external.download_ai_logging.result, "library")
+  path   = local.dbfs_ai_logging
 
   depends_on = [
     data.external.download_ai_logging
@@ -48,8 +48,8 @@ resource "local_file" "databricks_init" {
 }
 
 resource "databricks_dbfs_file" "dbfs_init_script" {
-  source               = local_file.databricks_init.filename
-  path                 = local.dbfs_init_script
+  source = local_file.databricks_init.filename
+  path   = local.dbfs_init_script
 
   depends_on = [
     local_file.databricks_init,

@@ -13,7 +13,7 @@ resource "azurerm_resource_group_template_deployment" "adf_analytics" {
   template_content    = data.local_file.oms_analytics.content
   deployment_mode     = "Incremental"
 
-  parameters_content  = jsonencode({
+  parameters_content = jsonencode({
     Name        = local.adf_analytics_name
     WorkspaceId = azurerm_log_analytics_workspace.oms.id
     OMSProduct  = local.adf_oms_product
