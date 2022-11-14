@@ -2,7 +2,7 @@
 resource "random_id" "adf_random" {
   keepers = {
     # Generate a new ID only when a new resource group is defined
-    resource_group = data.azurerm_resource_group.logging.name
+    resource_group = azurerm_resource_group.logging.name
     index          = var.instance
   }
   byte_length = 8
@@ -17,8 +17,8 @@ locals {
 
 resource "azurerm_data_factory" "adf" {
   name                = local.azurerm_data_factory_name
-  location            = data.azurerm_resource_group.logging.location
-  resource_group_name = data.azurerm_resource_group.logging.name
+  location            = azurerm_resource_group.logging.location
+  resource_group_name = azurerm_resource_group.logging.name
   identity {
     type = "SystemAssigned"
   }
@@ -59,7 +59,7 @@ resource "azurerm_monitor_diagnostic_setting" "adf" {
 
   dynamic "log" {
     iterator = log_category
-    for_each = data.azurerm_monitor_diagnostic_categories.adf.logs
+    for_each = data.azurerm_monitor_diagnostic_categories.adf.log_category_types
 
     content {
       category = log_category.value
@@ -94,15 +94,17 @@ data "local_file" "linked_databricks" {
 
 resource "azurerm_resource_group_template_deployment" "linked_databricks" {
   name                = local.databricks_link_name
-  resource_group_name = data.azurerm_resource_group.logging.name
+  resource_group_name = azurerm_resource_group.logging.name
   template_content    = data.local_file.linked_databricks.content
   deployment_mode     = "Incremental"
 
-  parameters_content = jsonencode({ dataFactoryName = azurerm_data_factory.adf.name
-    location            = data.azurerm_resource_group.logging.location
-    domain              = format("https://%s", azurerm_databricks_workspace.databricks.workspace_url)
-    workspaceResourceId = azurerm_databricks_workspace.databricks.id
-    clusterId           = databricks_cluster.my-cluster.id
+  parameters_content = jsonencode(
+    {
+      dataFactoryName     = { value = azurerm_data_factory.adf.name }
+      location            = { value = azurerm_resource_group.logging.location }
+      domain              = { value = format("https://%s", azurerm_databricks_workspace.databricks.workspace_url) }
+      workspaceResourceId = { value = azurerm_databricks_workspace.databricks.id }
+      clusterId           = { value = databricks_cluster.my-cluster.id }
     }
   )
   depends_on = [
@@ -120,7 +122,7 @@ resource "azurerm_resource_group_template_deployment" "linked_databricks" {
 
 # resource "azurerm_data_factory_linked_service_azure_blob_storage" "external" {
 #   name                = "external"
-#   resource_group_name = data.azurerm_resource_group.logging.name
+#   resource_group_name = azurerm_resource_group.logging.name
 #   data_factory_name   = azurerm_data_factory.adf.name
 #   connection_string   = module.data_storage_external.primary_connection_string
 
@@ -131,7 +133,7 @@ resource "azurerm_resource_group_template_deployment" "linked_databricks" {
 
 # resource "azurerm_data_factory_linked_service_azure_blob_storage" "internal" {
 #   name                = "internal"
-#   resource_group_name = data.azurerm_resource_group.logging.name
+#   resource_group_name = azurerm_resource_group.logging.name
 #   data_factory_name   = azurerm_data_factory.adf.name
 #   connection_string   = module.data_storage_internal.primary_connection_string
 
@@ -142,14 +144,14 @@ resource "azurerm_resource_group_template_deployment" "linked_databricks" {
 
 # resource "azurerm_data_factory_dataset_azure_blob" "external" {
 #   name                = "from_external"
-#   resource_group_name = data.azurerm_resource_group.logging.name
+#   resource_group_name = azurerm_resource_group.logging.name
 #   data_factory_name   = azurerm_data_factory.adf.name
 #   linked_service_name = azurerm_data_factory_linked_service_azure_blob_storage.external.name
 # }
 
 # resource "azurerm_data_factory_dataset_azure_blob" "internal" {
 #   name                = "to_internal"
-#   resource_group_name = data.azurerm_resource_group.logging.name
+#   resource_group_name = azurerm_resource_group.logging.name
 #   data_factory_name   = azurerm_data_factory.adf.name
 #   linked_service_name = azurerm_data_factory_linked_service_azure_blob_storage.internal.name
 # }

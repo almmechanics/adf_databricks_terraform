@@ -9,7 +9,7 @@ data "local_file" "logging_python" {
 }
 
 resource "databricks_notebook" "logging_python" {
-  source   = data.local_file.logging_python.content_base64
+  source   = data.local_file.logging_python.filename
   path     = "/Shared/logging_python"
   language = "PYTHON"
 
@@ -23,7 +23,7 @@ data "local_file" "logging_scala" {
 }
 
 resource "databricks_notebook" "logging_scala" {
-  source   = data.local_file.logging_scala.content_base64
+  source   = data.local_file.logging_scala.filename
   path     = "/Shared/logging_scala"
   language = "SCALA"
 
@@ -37,7 +37,7 @@ data "local_file" "adf_calling_databricks" {
 }
 
 resource "databricks_notebook" "adf_calling_databricks" {
-  source   = data.local_file.adf_calling_databricks.content_base64
+  source   = data.local_file.adf_calling_databricks.filename
   path     = "/Shared/adf_calling_databricks"
   language = "PYTHON"
 

@@ -38,15 +38,13 @@
         "inputs": [
             {
                 "referenceName": "${input}",
-                "type": "DatasetReference",
-                "parameters": {}
+                "type": "DatasetReference"
             }
         ],
         "outputs": [
             {
                 "referenceName": "${output}",
-                "type": "DatasetReference",
-                "parameters": {}
+                "type": "DatasetReference"
             }
         ]
     },

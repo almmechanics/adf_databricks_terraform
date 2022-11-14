@@ -1,6 +1,5 @@
 variable "ai_jar_version" {
   type    = string
-  default = "2.6.1"
 }
 
 variable "ai_key" {
@@ -14,3 +13,15 @@ variable "oms_id" {
 variable "oms_key" {
   type = string
 } 
+
+variable "ai_core"{
+  type = string
+}
+
+variable "ai_logging" {
+  type = string
+}
+
+variable "workspace_id" {
+  type=string
+}

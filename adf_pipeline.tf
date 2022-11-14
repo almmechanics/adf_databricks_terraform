@@ -39,16 +39,16 @@ data "local_file" "dataset_data_lake_storage_gen2" {
 
 resource "azurerm_resource_group_template_deployment" "dataset_data_lake_storage_gen2_source" {
   name                = "dataset_source"
-  resource_group_name = data.azurerm_resource_group.logging.name
+  resource_group_name = azurerm_resource_group.logging.name
   template_content    = data.local_file.dataset_data_lake_storage_gen2.content
   deployment_mode     = "Incremental"
 
   parameters_content = jsonencode({
-    data_factory_id   = azurerm_data_factory.adf.id
-    location          = data.azurerm_resource_group.logging.location
-    context           = "external"
-    linkedServiceName = azurerm_data_factory_linked_service_data_lake_storage_gen2.external.name
-    container         = "source"
+    dataFactoryName   = { value = azurerm_data_factory.adf.name }
+    location          = { value = azurerm_resource_group.logging.location }
+    context           = { value = "external" }
+    linkedServiceName = { value = azurerm_data_factory_linked_service_data_lake_storage_gen2.external.name }
+    container         = { value = "source" }
     }
   )
   depends_on = [
@@ -60,16 +60,16 @@ resource "azurerm_resource_group_template_deployment" "dataset_data_lake_storage
 
 resource "azurerm_resource_group_template_deployment" "dataset_data_lake_storage_gen2_destination" {
   name                = "dataset_destination"
-  resource_group_name = data.azurerm_resource_group.logging.name
+  resource_group_name = azurerm_resource_group.logging.name
   template_content    = data.local_file.dataset_data_lake_storage_gen2.content
   deployment_mode     = "Incremental"
 
   parameters_content = jsonencode({
-    dataFactoryName   = azurerm_data_factory.adf.name
-    location          = data.azurerm_resource_group.logging.location
-    context           = "internal"
-    linkedServiceName = azurerm_data_factory_linked_service_data_lake_storage_gen2.internal.name
-    container         = "destination"
+    dataFactoryName   = { value = azurerm_data_factory.adf.name }
+    location          = { value = azurerm_resource_group.logging.location }
+    context           = { value = "internal" }
+    linkedServiceName = { value = azurerm_data_factory_linked_service_data_lake_storage_gen2.internal.name }
+    container         = { value = "destination" }
     }
   )
   depends_on = [

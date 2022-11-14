@@ -1,0 +1,44 @@
+//workspace_name
+
+
+resource "azuread_application" "databricks" {
+  display_name = local.workspace_name
+}
+
+
+resource "azuread_service_principal" "databricks" {
+  application_id               = azuread_application.databricks.application_id
+  app_role_assignment_required = false
+  owners                       = [data.azuread_client_config.current.object_id]
+}
+
+resource "time_rotating" "example" {
+  rotation_days = 7
+}
+
+resource "azuread_service_principal_password" "databricks" {
+  service_principal_id = azuread_service_principal.databricks.object_id
+    rotate_when_changed = {
+    rotation = time_rotating.example.id
+  }
+}
+
+
+data "azurerm_subscription" "current" {
+}
+
+resource "azurerm_role_assignment" "databricks" {
+  scope                = data.azurerm_subscription.current.id
+  role_definition_name = "Contributor"
+  principal_id         = azuread_service_principal.databricks.object_id
+}
+
+
+
+provider "databricks" {
+  host = azurerm_databricks_workspace.databricks.workspace_url
+  azure_workspace_resource_id = azuread_application.databricks.id
+  azure_tenant_id = data.azurerm_client_config.current.tenant_id
+  azure_client_id = azuread_service_principal.databricks.application_id
+  azure_client_secret = azuread_service_principal_password.databricks.value
+}
